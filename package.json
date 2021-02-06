@@ -1,0 +1,26 @@
+{
+  "name": "gmapi",
+  "version": "1.0.0",
+  "description": "## Description",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start_scraper": "node ./Scraping/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LSWarss/GMAPI.git"
+  },
+  "author": "LSWarss - Łukasz Stachnik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LSWarss/GMAPI/issues"
+  },
+  "homepage": "https://github.com/LSWarss/GMAPI#readme",
+  "dependencies": {
+    "puppeteer": "^7.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.19.0"
+  }
+}
