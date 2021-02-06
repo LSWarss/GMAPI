@@ -15,7 +15,7 @@ const scraperObject = {
         });
 
         // Loop through each of those links, open a new page instance and get the relevant data from them
-        let pagePromise = (link) => Promise(async(resolve, reject) => {
+        let pagePromise = (link) => new Promise(async(resolve, reject) => {
             let dataObj = {};
             let newPage = await browser.newPage();
             await newPage.goto(link);
