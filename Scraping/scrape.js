@@ -2,15 +2,20 @@ const request = require('request')
 const cheerio = require('cheerio')
 const fs = require('fs')
 
-const writeStream = fs.createWriteStream('games.csv', { flags: 'a' })
 
-// Write Headers
-writeStream.write('Title, Platform, Date \n');
+
 
 const uriPC = 'https://www.metacritic.com/browse/games/release-date/new-releases/pc/date'
 const uriPS5 = 'https://www.metacritic.com/browse/games/release-date/new-releases/ps5/date'
 
-function scrapeGames(url) {
+function scrapeGames(url, filename, $) {
+
+    const writeStream = fs.createWriteStream(filename + '.csv', {flags: 'a'})
+
+    // Write Headers
+    writeStream.write('Title, Platform, Date \n');
+
+
     request(url, (error, response, html) => {
 
         if (!error && response.statusCode == 200) {
@@ -38,6 +43,23 @@ function scrapeGames(url) {
     });
 }
 
-scrapeGames(uriPS5)
+function scrapAllPages(url, dataName){
+    request(url, (error, response, html) => {
+        if(!error && response.statusCode == 200) {
+            const $ = cheerio.load(html);
+
+            const lastPageNumber = $('.last_page').find('a').text()
+            console.log(lastPageNumber);
+
+            scrapeGames(url, dataName, $);
+
+        }
+    });
 
 
+}
+
+
+// scrapeGames(uriPS5, 'games_ps5.csv')
+
+scrapAllPages(uriPC, 'games_PC')
