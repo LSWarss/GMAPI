@@ -5,7 +5,7 @@ const fs = require('fs')
 
 
 
-const uriPC = 'https://www.metacritic.com/browse/games/release-date/new-releases/pc/date'
+const uriPC = 'https://www.metacritic.com/browse/games/release-date/available/pc/date'
 const uriPS5 = 'https://www.metacritic.com/browse/games/release-date/new-releases/ps5/date'
 
 function scrapeGames(url, filename, $) {
@@ -15,11 +15,6 @@ function scrapeGames(url, filename, $) {
     // Write Headers
     writeStream.write('Title, Platform, Date \n');
 
-
-    request(url, (error, response, html) => {
-
-        if (!error && response.statusCode == 200) {
-            const $ = cheerio.load(html);
 
             // const gameContent = $('.clamp-summary-wrap');
             // // console.log(gameContent.html());
@@ -39,27 +34,41 @@ function scrapeGames(url, filename, $) {
             })
 
             console.log('Scraping done 🤖');
-        }
-    });
 }
 
-function scrapAllPages(url, dataName){
+function scrapAllPages(url, dataName) {
+
+    let path = `.${dataName}.csv`
+    if(fs.existsSync(path)){
+        fs.unlinkSync(path)
+    }
+    
+
     request(url, (error, response, html) => {
         if(!error && response.statusCode == 200) {
             const $ = cheerio.load(html);
 
             const lastPageNumber = $('.last_page').find('a').text()
             console.log(lastPageNumber);
-
-            scrapeGames(url, dataName, $);
-
+            if(lastPageNumber === ''){
+                scrapeGames(url, dataName, $);
+            } else {
+                for(let page = 0; page < parseInt(lastPageNumber); page++) {
+                        if(page === 0) {
+                            scrapeGames(url,dataName,$)
+                        } else {
+                            let scrapUrl = url + `?page=${page}`
+                            scrapeGames(scrapUrl,dataName,$)
+                        }
+                }
+            }
+            
         }
     });
-
-
 }
 
 
 // scrapeGames(uriPS5, 'games_ps5.csv')
 
+scrapAllPages(uriPS5, 'games_PS5')
 scrapAllPages(uriPC, 'games_PC')
