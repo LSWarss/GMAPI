@@ -2,23 +2,6 @@
 
 ## Description
 
-
-## Tech-Stack
-
-### Scraping: 
-
-- Python 
-- BeautifulSoup
-
-### REST API
-
-- Node
-- Express
-
-```
-More about dependencies in requirements.txt or package.json 
-```
-
 ## To-Implement
 
 - [ ] WebScraping data of premiers and games
