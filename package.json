@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/LSWarss/GMAPI#readme",
   "dependencies": {
-    "puppeteer": "^7.0.1"
+    "cheerio": "^1.0.0-rc.5",
+    "puppeteer": "^7.0.1",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^7.19.0"
