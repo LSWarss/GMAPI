@@ -1,7 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const port = 3000
+
+const config = require('config')
 const controller = require('../API/controller/gamesController')
 
 
@@ -16,6 +17,7 @@ app.get('/', (request, response) => {
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
+const port = config.get('app.port')
 app.listen(port, () => {
     console.log(`App running on port ${port} ⛴`)
 })

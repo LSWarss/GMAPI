@@ -1,0 +1,12 @@
+{
+    "app": {
+        "port": 3000
+    },
+    "db": {
+        "user" : "me",
+        "host" : "localhost",
+        "database" : "api",
+        "password": "password",
+        "port": 5432
+    }
+}
