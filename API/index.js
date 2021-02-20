@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const controller = require('../API/controller/gamesController')
-
+const PORT = process.env.PORT || 3000
 
 app.use(bodyParser.json())
 app.use(
@@ -15,9 +15,8 @@ app.get('/', (request, response) => {
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
-const port = process.env.API_PORT
-app.listen(port, () => {
-    console.log(`App running on port ${port} ⛴`)
+app.listen(PORT, () => {
+    console.log(`App running on port ${PORT} ⛴`)
 })
 
 app.get('/games', controller.getGames)
