@@ -20,7 +20,6 @@
   "homepage": "https://github.com/LSWarss/GMAPI#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.5",
-    "config": "^3.3.3",
     "express": "^4.17.1",
     "pg": "^8.5.1",
     "puppeteer": "^7.0.1",

@@ -1,4 +1,4 @@
-const { pool } = require('../model/queries')
+const { pool } = require('../model/db')
 
 const getGames = (request, response) => {
     pool.query('SELECT * FROM games ORDER BY release_date ASC', (error, results) => {
