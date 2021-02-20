@@ -1,4 +1,4 @@
-# [GMAPI - Gaming Premiers and Informations API](www.gmapi.org)
+# [GMAPI - Gaming Premiers and Informations API](http://www.gmapi.org/)
 
 ## Description
 
