@@ -25,3 +25,4 @@ app.post('/games', controller.createGame)
 app.put('/games/:id', controller.updateGame)
 app.delete('/games/:id', controller.deleteGame)
 
+    

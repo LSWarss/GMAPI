@@ -1,19 +1,22 @@
 const Pool = require('pg').Pool
+let pool = new Pool()
 
-// const pool = new Pool({
-//     user: config.get('db.user'),
-//     host: config.get('db.host'),
-//     database: config.get('db.database'),
-//     password: config.get('db.password'),
-//     port: config.get('db.port')
-// })
-
-const pool = new Pool({
-   connectionString: process.env.DATABASE_URL,
-   ssl: {
-       rejectUnauthorized: false
-   }
-});
+if (process.env.DATABASE_URL) {
+    pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+            });
+} else {
+    pool = new Pool({
+            user: 'postgres',
+            host: 'localhost',
+            database: 'postgres',
+            password: process.env.DATABASE_PASSWORD,
+            port: 5432
+        })
+}
 
 pool.connect()
 
