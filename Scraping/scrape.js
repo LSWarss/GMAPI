@@ -19,7 +19,6 @@ const metaUrls = {
 
 function scrapeGames(url, writeStream) {
 
-
     request(url, (error, response, html) => {
         if (!error && response.statusCode == 200) {
 
@@ -33,6 +32,22 @@ function scrapeGames(url, writeStream) {
                     const gameRelease = gameDetails.find('span').last().text().replace(/\s\s+/g, '')
 
                     // Write row to CSV
+                    pool.query('SELECT * FROM games WHERE title = $1', [gameTitle], (error, results) => {
+                        if (error) {
+                            throw new Error(`Error on selecting from database occured ❌: ${error}`);
+                        }  else { 
+                            if(results && results.length) {
+                                console.log('In database there is a game with such title, skipping ⏭')
+                            } else {
+                                pool.query('INSERT INTO games (title, platform, release_date) VALUES ($1,$2,$3)', [gameTitle,gamePlatform,convertToPgDate(gameRelease)], (error, results) => {
+                                    if(error) { 
+                                        throw new Error(`Error on inserting to database occured ❌: ${error}`);
+                                    }
+                                });
+                            }
+                        }
+                    })
+
                     writeStream.write(`${gameTitle}, ${gamePlatform}, ${convertToPgDate(gameRelease)} \n`);
 
                     // console.log(`Game: ${gameTitle}, for ${gamePlatform}, realease at ${gameRelease}`)
@@ -43,10 +58,8 @@ function scrapeGames(url, writeStream) {
             }
         } else {
             console.log(`There was an expected error ❌: ${error} and code: ${response.statusCode} on URL: ${url}`)
-        }
-
-       
-    });
+        } 
+    })
 }
 
 function scrapAllPages(url, dataName) {
@@ -66,7 +79,7 @@ function scrapAllPages(url, dataName) {
 
     // Write Headers
     writeStream.write('Title, Platform, Date \n');
-
+    
     request(url, (error, response, html) => {
         if (!error && response.statusCode == 200) {
             const $ = cheerio.load(html);
