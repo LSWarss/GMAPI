@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const controller = require('../API/controller/gamesController')
+const controller = require('./controller/gamesController')
 const PORT = process.env.PORT || 3000
 
 app.use(bodyParser.json())
@@ -25,4 +25,3 @@ app.post('/games', controller.createGame)
 app.put('/games/:id', controller.updateGame)
 app.delete('/games/:id', controller.deleteGame)
 
-    

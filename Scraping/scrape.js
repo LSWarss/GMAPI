@@ -2,8 +2,9 @@ const request = require('request')
 const cheerio = require('cheerio')
 const {
     pool
-} = require('../API/model/db')
+} = require('../api/model/db')
 const fs = require('fs')
+const { convertToPgDate } = require('./utilities')
 
 const metaUrls = {
     uriPC: 'https://www.metacritic.com/browse/games/release-date/available/pc/date',
@@ -32,18 +33,19 @@ function scrapeGames(url, writeStream) {
                     const gameRelease = gameDetails.find('span').last().text().replace(/\s\s+/g, '')
 
                     // Write row to CSV
-                    writeStream.write(`${gameTitle}, ${gamePlatform}, ${gameRelease} \n`);
+                    writeStream.write(`${gameTitle}, ${gamePlatform}, ${convertToPgDate(gameRelease)} \n`);
 
                     // console.log(`Game: ${gameTitle}, for ${gamePlatform}, realease at ${gameRelease}`)
                 })
+                console.log(`Scraping done for URL ✅: ${url}`);
             } else {
                 setTimeout(scrapeGames(url, writeStream), 300)
             }
         } else {
-            console.log(`There was an expected error ❌: ${error}`)
+            console.log(`There was an expected error ❌: ${error} and code: ${response.statusCode} on URL: ${url}`)
         }
 
-        console.log('Scraping done 🤖');
+       
     });
 }
 
@@ -54,14 +56,14 @@ function scrapAllPages(url, dataName) {
         fs.unlinkSync(path)
     }
 
-    const writeStream = fs.createWriteStream(`/Users/lukaszstachnik/ProjectSpace/GMAPI/Scraping/scrapedData/${dataName}.csv`, {
+    const writeStream = fs.createWriteStream(`${dataName}.csv`, {
         flags: 'a'
     })
 
     writeStream.on('error', function (err) {
         console.log(err);
     });
-    
+
     // Write Headers
     writeStream.write('Title, Platform, Date \n');
 
@@ -96,8 +98,14 @@ function scrapAllPages(url, dataName) {
 function scrapAllUrls() {
     for (const key in metaUrls) {
         console.log(metaUrls[key])
-        scrapAllPages(metaUrls[key], key)
+        scrapAllPages(metaUrls[key], `/Users/lukaszstachnik/ProjectSpace/GMAPI/scraping/scrapedData/${key}_games`)
     }
 }
 
 scrapAllUrls()
+
+// scrapAllPages("https://www.metacritic.com/browse/games/release-date/new-releases/ps5/date", 'testing')
+
+module.exports = {
+    scrapAllPages
+}
