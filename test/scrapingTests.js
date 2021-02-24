@@ -1,4 +1,4 @@
-const { convertToPgDate } = require("../scraping/utilities")
+const { convertToPgDate } = require("../Scraping/utilities")
 var assert = require('assert')
 
 describe('Utility', function() {
