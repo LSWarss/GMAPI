@@ -1,5 +1,7 @@
 const request = require('request')
 const cheerio = require('cheerio')
+const schedule = require('node-schedule')
+
 const {
     pool
 } = require('../API/model/db')
@@ -100,7 +102,14 @@ function scrapAllUrls() {
     }
 }
 
-scrapAllUrls()
+
+const rule = new schedule.RecurrenceRule();
+rule.hour = 12;
+
+console.log("Scraper started and scheduled for everyday 12:00 o Clock ⏱")
+const job = schedule.scheduleJob(rule, function(){
+    scrapAllUrls()
+});
 
 
 module.exports = {

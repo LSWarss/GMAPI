@@ -30,8 +30,6 @@ function convertToPgDate(date){
     return `${convertedDate[2]}-${convertedDate[0]}-${convertedDate[1]}`
 }
 
-console.log(convertToPgDate('February 19, 2021'))
-
 module.exports = {
     convertToPgDate
 }
