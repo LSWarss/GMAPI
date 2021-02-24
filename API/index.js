@@ -20,6 +20,7 @@ app.listen(PORT, () => {
 })
 
 app.get('/games', controller.getGames)
+app.get('/games/platform/:name', controller.getGamesByPlatform)
 app.get('/games/:id', controller.getGame)
 app.post('/games', controller.createGame)
 app.put('/games/:id', controller.updateGame)

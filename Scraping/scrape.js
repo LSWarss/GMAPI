@@ -3,7 +3,8 @@ const cheerio = require('cheerio')
 const {
     pool
 } = require('../api/model/db')
-const fs = require('fs')
+
+
 const { convertToPgDate } = require('./utilities')
 
 const metaUrls = {
@@ -17,7 +18,7 @@ const metaUrls = {
     uriStadia: 'https://www.metacritic.com/browse/games/release-date/available/stadia/date'
 }
 
-function scrapeGames(url, writeStream) {
+function scrapeGames(url) {
 
     request(url, (error, response, html) => {
         if (!error && response.statusCode == 200) {
@@ -47,14 +48,10 @@ function scrapeGames(url, writeStream) {
                             }
                         }
                     })
-
-                    writeStream.write(`${gameTitle}, ${gamePlatform}, ${convertToPgDate(gameRelease)} \n`);
-
-                    // console.log(`Game: ${gameTitle}, for ${gamePlatform}, realease at ${gameRelease}`)
                 })
                 console.log(`Scraping done for URL ✅: ${url}`);
             } else {
-                setTimeout(scrapeGames(url, writeStream), 300)
+                setTimeout(scrapeGames(url), 300)
             }
         } else {
             console.log(`There was an expected error ❌: ${error} and code: ${response.statusCode} on URL: ${url}`)
@@ -62,24 +59,8 @@ function scrapeGames(url, writeStream) {
     })
 }
 
-function scrapAllPages(url, dataName) {
-
-    let path = `.${dataName}.csv`
-    if (fs.existsSync(path)) {
-        fs.unlinkSync(path)
-    }
-
-    const writeStream = fs.createWriteStream(`${dataName}.csv`, {
-        flags: 'a'
-    })
-
-    writeStream.on('error', function (err) {
-        console.log(err);
-    });
-
-    // Write Headers
-    writeStream.write('Title, Platform, Date \n');
-    
+function scrapAllPages(url) {
+  
     request(url, (error, response, html) => {
         if (!error && response.statusCode == 200) {
             const $ = cheerio.load(html);
@@ -88,14 +69,14 @@ function scrapAllPages(url, dataName) {
 
 
             if (lastPageNumber === '') {
-                scrapeGames(url, writeStream);
+                scrapeGames(url);
             } else {
                 for (let page = 0; page < parseInt(lastPageNumber); page++) {
                     if (page === 0) {
-                        scrapeGames(url, writeStream)
+                        scrapeGames(url)
                     } else {
                         let scrapUrl = url + `?page=${page}`
-                        scrapeGames(scrapUrl, writeStream)
+                        scrapeGames(scrapUrl)
                     }
                 }
             }

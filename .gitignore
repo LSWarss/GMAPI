@@ -3,6 +3,7 @@
 
 ### VSCode
 .vscode
+.nyc_output
 
 ### Django ###
 *.log

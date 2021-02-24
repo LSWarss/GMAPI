@@ -9,6 +9,19 @@ const getGames = (request, response) => {
     })
 }
 
+const getGamesByPlatform = (request,response) => {
+
+    const platformName = request.params.name
+    console.log(platformName)
+
+    pool.query('SELECT * FROM games WHERE platform = $1', [platformName], (error,results) =>  {
+    if(error) {
+        throw error
+    }
+    response.status(200).json(results.rows)
+    })
+}
+
 const getGame = (request, response) => {
 
     const id = parseInt(request.params.id)
@@ -58,6 +71,7 @@ const deleteGame = (request, response) => {
 module.exports = {
     getGame,
     getGames,
+    getGamesByPlatform,
     createGame,
     updateGame,
     deleteGame
