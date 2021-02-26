@@ -1,7 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const controller = require('./controller/gamesController')
+const gamesController = require('./controller/gamesController')
+const scraperController = require('./controller/scraperController')
 const PORT = process.env.PORT || 3000
 
 app.use(bodyParser.json())
@@ -19,10 +20,11 @@ app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
 })
 
-app.get('/games', controller.getGames)
-app.get('/games/platform/:name', controller.getGamesByPlatform)
-app.get('/games/:id', controller.getGame)
-app.post('/games', controller.createGame)
-app.put('/games/:id', controller.updateGame)
-app.delete('/games/:id', controller.deleteGame)
+app.get('/games', gamesController.getGames)
+app.get('/games/platform/:name', gamesController.getGamesByPlatform)
+app.get('/games/:id', gamesController.getGame)
+app.post('/games', gamesController.createGame)
+app.post('/scrape', scraperController.startScraperManually)
+app.put('/games/:id', gamesController.updateGame)
+app.delete('/games/:id', gamesController.deleteGame)
 

@@ -113,5 +113,5 @@ const job = schedule.scheduleJob(rule, function(){
 
 
 module.exports = {
-    scrapAllPages
+    scrapAllUrls
 }
