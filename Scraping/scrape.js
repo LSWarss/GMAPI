@@ -24,44 +24,34 @@ const metaUrls = {
 
 function scrapeGames(url) {
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            request(url, (error, response, html) => {
-                if (!error && response.statusCode == 200) {
+            setTimeout(() => {
+                    request(url, (error, response, html) => {
+                            if (!error && response.statusCode == 200) {
 
-                    const $ = cheerio.load(html);
+                                const $ = cheerio.load(html);
 
-                    if ($.length) {
-                        $('.clamp-summary-wrap').each((i, el) => {
-                            const gameTitle = $(el).find('h3').first().text()
-                            const gameDetails = $(el).find('.clamp-details')
-                            const gamePlatform = gameDetails.find('span').next('span').text().replace(/\s\s+/g, '')
-                            const gameRelease = gameDetails.find('span').last().text().replace(/\s\s+/g, '')
+                                if ($.length) {
+                                    $('.clamp-summary-wrap').each((i, el) => {
+                                            const gameTitle = $(el).find('h3').first().text()
+                                            const gameDetails = $(el).find('.clamp-details')
+                                            const gamePlatform = gameDetails.find('span').next('span').text().replace(/\s\s+/g, '')
+                                            const gameRelease = gameDetails.find('span').last().text().replace(/\s\s+/g, '')
 
-                            // Write row to CSV
-                            pool.query('SELECT * FROM games WHERE title = $1', [gameTitle], (error, results) => {
-                                if (error) {
-                                    throw new Error(`Error on selecting from database occured ❌: ${error}`);
-                                } else {
-                                    if (results && results.length) {
-                                        console.log('In database there is a game with such title, skipping ⏭')
-                                    } else {
-                                        pool.query('INSERT INTO games (title, platform, release_date) VALUES ($1,$2,$3)', [gameTitle, gamePlatform, convertToPgDate(gameRelease)], (error, results) => {
-                                            if (error) {
-                                                throw new Error(`Error on inserting to database occured ❌: ${error}`);
-                                            }
-                                        });
-                                    }
-                                }
-                            })
-                        })
-                        console.log(`Scraping done for URL ✅: ${url}`);
-                        resolve();
-                    } else {
-                        reject(`There was an expected error ❌: ${error} and code: ${response.statusCode} on URL: ${url}`)
-                    }
-                }
-            })
-        }, 5000)
+                                            // Write row to CSV
+                                            pool.query('INSERT INTO games (title, platform, release_date) VALUES ($1,$2,$3) ON CONFLICT CONSTRAINT games_title_key DO NOTHING;', [gameTitle, gamePlatform, convertToPgDate(gameRelease)], (error, results) => {
+                                                if (error) {
+                                                    throw new Error(`Error on inserting to database occured ❌: ${error}`);
+                                                }
+                                            });
+                                        })
+                                console.log(`Scraping done for URL ✅: ${url}`);
+                                resolve();
+                            } else {
+                                reject(`There was an expected error ❌: ${error} and code: ${response.statusCode} on URL: ${url}`)
+                            }
+                        }
+                    })
+            }, 5000)
     })
 }
 
@@ -107,7 +97,7 @@ const rule = new schedule.RecurrenceRule();
 rule.hour = 12;
 
 console.log("Scraper started and scheduled for everyday 12:00 o Clock ⏱")
-const job = schedule.scheduleJob(rule, function(){
+const job = schedule.scheduleJob(rule, function () {
     scrapAllUrls()
 });
 
