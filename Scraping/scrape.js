@@ -38,7 +38,7 @@ function scrapeGames(url) {
                                             const gameRelease = gameDetails.find('span').last().text().replace(/\s\s+/g, '')
 
                                             // Write row to CSV
-                                            pool.query('INSERT INTO games (title, platform, release_date) VALUES ($1,$2,$3) ON CONFLICT CONSTRAINT games_title_key DO NOTHING;', [gameTitle, gamePlatform, convertToPgDate(gameRelease)], (error, results) => {
+                                            pool.query('INSERT INTO games (title, platform, release_date) VALUES ($1,$2,$3) ON CONFLICT ON CONSTRAINT games_title_key DO NOTHING;', [gameTitle, gamePlatform, convertToPgDate(gameRelease)], (error, results) => {
                                                 if (error) {
                                                     throw new Error(`Error on inserting to database occured ❌: ${error}`);
                                                 }
