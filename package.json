@@ -4,7 +4,7 @@
   "description": "## Description",
   "main": "./Api/index.js",
   "scripts": {
-    "test": "nyc --reporter=text mocha",
+    "test": "mocha",
     "start_scraper": "node ./Scraping/scrape.js",
     "start_server": "node ./API/index.js",
     "dev_server": "nodemon ./API/index.js"
@@ -27,7 +27,8 @@
     "morgan": "^1.10.0",
     "node-schedule": "^2.0.0",
     "pg": "^8.5.1",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "supertest": "^6.1.3"
   },
   "devDependencies": {
     "eslint": "^7.19.0",

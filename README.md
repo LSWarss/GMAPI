@@ -18,7 +18,7 @@ curl -i -H "Accept: application/json" 'http://www.gmapi.org/games'
 
 ```bash
 
-curl -i -H "Accept: application/json" 'http://www.gmapi.org/games/pc'
+curl -i -H "Accept: application/json" 'http://www.gmapi.org/games/platform/PC'
 
 ```
 
