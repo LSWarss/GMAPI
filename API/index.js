@@ -1,10 +1,8 @@
 // Dependencies
 const express = require('express')
-const bodyParser = require('body-parser')
 const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
-const passport = require('passport')
 
 // Routes dependecies
 const gamesController = require('./controller/gamesController')
@@ -23,9 +21,10 @@ app.use(cors());
 app.use(morgan('combined'));
 
 
-app.use(bodyParser.json())
+
 app.use(
-    bodyParser.urlencoded({
+    express.json(),
+    express.urlencoded({
         extended: true,
     })
 )
@@ -41,8 +40,5 @@ app.listen(PORT, () => {
 app.get('/games', gamesController.getGames)
 app.get('/games/platform/:name', gamesController.getGamesByPlatform)
 app.get('/games/:id', gamesController.getGame)
-app.post('/games', gamesController.createGame)
 app.post('/scrape', scraperController.startScraperManually)
-app.put('/games/:id', gamesController.updateGame)
-app.delete('/games/:id', gamesController.deleteGame)
 

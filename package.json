@@ -24,14 +24,10 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
-    "jwks-rsa": "^1.12.2",
     "morgan": "^1.10.0",
     "node-schedule": "^2.0.0",
-    "passport": "^0.4.1",
     "pg": "^8.5.1",
-    "puppeteer": "^7.0.1",
-    "request": "^2.88.2",
-    "un": "^0.0.0"
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^7.19.0",
