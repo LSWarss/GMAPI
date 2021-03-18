@@ -94,11 +94,22 @@ function scrapAllUrls() {
 
 
 const rule = new schedule.RecurrenceRule();
-rule.hour = 12;
+rule.hour = 1;
 
-console.log("Scraper started and scheduled for everyday 12:00 o Clock ⏱")
-const job = schedule.scheduleJob(rule, function () {
+console.log("Scraper will be triggered every hour ⏱")
+const scrapJob = schedule.scheduleJob(rule, function () {
     scrapAllUrls()
+});
+
+const testRule = new schedule.RecurrenceRule();
+testRule.minute = 5;
+
+const testJob = schedule.scheduleJob(testRule, function() {
+    console.log("Test cron job: ")
+    request('https://api.chucknorris.io/jokes/random', { json: true }, (err, res, body) => {
+        if (err) { return console.log(err); }
+        console.log(body.value);
+    });
 });
 
 

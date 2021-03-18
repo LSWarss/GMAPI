@@ -22,6 +22,20 @@ const getGamesByPlatform = (request,response) => {
     })
 }
 
+const getGameByTitle = (request,response) => {
+    const { title } = request.body
+    pool.query('SELECT * FROM games WHERE title = $1', [title], (error, results) => {
+            if (error) {
+                throw error
+            }
+        if(results.rows.length != 0) {
+            response.status(200).json(results.rows)  
+        } else {
+            response.status(404).json({message: `Unfortunately there is no game with such title ${title}`})
+        }
+    })
+}   
+
 const getGame = (request, response) => {
 
     const id = parseInt(request.params.id)
@@ -33,6 +47,8 @@ const getGame = (request, response) => {
         response.status(200).json(results.rows)
     })
 }
+
+
 
 const createGame = (request, response) => {
     const { title, platform, release_date } = request.body
@@ -72,6 +88,7 @@ module.exports = {
     getGame,
     getGames,
     getGamesByPlatform,
+    getGameByTitle,
     createGame,
     updateGame,
     deleteGame
