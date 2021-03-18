@@ -1,6 +1,6 @@
 const request = require('request')
 const cheerio = require('cheerio')
-const schedule = require('node-schedule')
+
 
 const {
     pool
