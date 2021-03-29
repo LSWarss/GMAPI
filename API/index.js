@@ -34,7 +34,7 @@ app.get('/', (request, response) => {
 
 app.use('/games',cors(), gamesRoutes)
 
-app.post('/scrape', scraperController.startScraperManually)
+app.post('/games/scrape', scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
