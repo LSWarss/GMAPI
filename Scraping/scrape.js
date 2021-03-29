@@ -71,13 +71,11 @@ function scrapGamesWithExtras(url) {
                             const gamePlatform = gameDetails.find('span').next('span').text().replace(/\s\s+/g, '')
                             const gameRelease = gameDetails.find('span').last().text().replace(/\s\s+/g, '')
                             const gameSummary = $(el).find('div.summary').first().text().replace(/\s\s+/g, '')
-                            scrapGameDetails("https://www.metacritic.com" + gameLink).then((response) => {
-                                const gameExtras = response
-                                console.log(response)
-                            })
-                            
-                            // Write row to CSV
-                            pool.query('INSERT INTO games (title, platform, release_date) VALUES ($1,$2,$3) ON CONFLICT ON CONSTRAINT games_title_key DO NOTHING;', [gameTitle, gamePlatform, convertToPgDate(gameRelease)], (error, results) => {
+                            const gameScoreDiv = $(el).find('div.clamp-userscore')
+                            const gameScore = gameScoreDiv.find('a').children().first().text() 
+    
+                            // Write row to database
+                            pool.query('INSERT INTO games (title, description, developer, genre, release_date, platform, score) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT ON CONSTRAINT games_title_key DO NOTHING;', [gameTitle,gameSummary, gameDeveloper, gameGenre, convertToPgDate(gameRelease), gamePlatform, gameScore], (error, results) => {
                                 if (error) {
                                     throw new Error(`Error on inserting to database occured ❌: ${error}`);
                                 }
@@ -160,7 +158,7 @@ function scrapAllUrls() {
     }
 }
 
-scrapGamesWithExtras("https://www.metacritic.com/browse/games/release-date/coming-soon/ps5/date")
+scrapGamesWithExtras("https://www.metacritic.com/browse/games/release-date/new-releases/ps5/date")
 
 module.exports = {
     scrapAllUrls
