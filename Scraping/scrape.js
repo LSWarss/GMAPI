@@ -51,13 +51,13 @@ async function getGames(url) {
        
         const gameDetails = await getGameDetails("https://metacritic.com" + game.gameLink)
         
-        if (gameDetails[1].gameDeveloper != NaN) {
+        if (gameDetails[1].gameDeveloper != undefined) {
             game["gameDeveloper"] = gameDetails[1].gameDeveloper
         } else { 
             game["gameDeveloper"] = "Unknown"
         }
 
-        if (gameDetails[1].gameGenre != NaN) { 
+        if (gameDetails[1].gameGenre != undefined) { 
             game["gameGenre"] = gameDetails[1].gameGenre 
         } else {
             game["gameGenre"] = "Unknown"
