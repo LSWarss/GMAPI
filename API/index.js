@@ -49,11 +49,9 @@ app.get('/', (request, response) => {
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
-app.use(express.static('public'))
-
 app.use('/games', gamesRoutes)
 
-app.post('/scrape', scraperController.startScraperManually)
+app.get('/scrape', scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
