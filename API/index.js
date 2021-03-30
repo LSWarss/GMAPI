@@ -49,8 +49,6 @@ app.get('/', (request, response) => {
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
-app.use(express.static('public'))
-
 app.use('/games', gamesRoutes)
 
 app.post('/scrape', scraperController.startScraperManually)
