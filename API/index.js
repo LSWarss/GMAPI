@@ -1,6 +1,5 @@
 // Dependencies
 const express = require('express')
-const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
 
@@ -32,9 +31,9 @@ app.get('/', (request, response) => {
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
-app.use('/games',cors(), gamesRoutes)
+app.use('/games', gamesRoutes)
 
-app.post('/scrape', scraperController.startScraperManually)
+app.post('/games/scrape', scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
