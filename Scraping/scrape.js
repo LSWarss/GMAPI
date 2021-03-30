@@ -24,7 +24,6 @@ const metaUrls2 = [
 async function scraper() { 
     for await (url of metaUrls2) { 
         const games = await getGames(url);
-        console.log({url, games})
     }
 }
 
@@ -60,6 +59,7 @@ async function getGames(url) {
                 throw new Error(`Error on inserting to database occured ❌: ${error}`);
             }
         });
+        
         console.log(game)
         
     }
@@ -84,7 +84,6 @@ async function getGameDetails(url) {
     return details
 }
 
-scraper();
 
 module.exports = {
     scraper
