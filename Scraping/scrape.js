@@ -51,8 +51,17 @@ async function getGames(url) {
        
         const gameDetails = await getGameDetails("https://metacritic.com" + game.gameLink)
         
-        game["gameDeveloper"] = gameDetails[1].gameDeveloper || "empty"
-        game["gameGenre"] = gameDetails[1].gameGenre || "empty"
+        if (gameDetails[1].gameDeveloper != NaN) {
+            game["gameDeveloper"] = gameDetails[1].gameDeveloper
+        } else { 
+            game["gameDeveloper"] = "Unknown"
+        }
+
+        if (gameDetails[1].gameGenre != NaN) { 
+            game["gameGenre"] = gameDetails[1].gameGenre 
+        } else {
+            game["gameGenre"] = "Unknown"
+        }   
 
         pool.query('INSERT INTO games (title, description, developer, genre, release_date, platform, score) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT ON CONSTRAINT games_title_key DO NOTHING;', [game.gameTitle,game.gameSummary, game.gameDeveloper, game.gameGenre, convertToPgDate(game.gameRelease), game.gamePlatform, game.gameScore], (error, results) => {
             if (error) {

@@ -3,8 +3,23 @@ const express = require('express')
 const helmet = require('helmet')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')   
-const csrf = require('csurf')
 const cron = require('../Scraping/cron')
+
+// Cors
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+
 
 // Routes dependecies
 const scraperController = require('./controller/scraperController')
@@ -22,6 +37,7 @@ app.use(helmet());
 app.use(morgan('combined'));
 
 app.use(
+    allowCrossDomain,
     express.json(),
     express.urlencoded({
         extended: false,
@@ -35,7 +51,7 @@ app.get('/', (request, response) => {
 
 app.use('/games', gamesRoutes)
 
-app.get('/scrape', scraperController.startScraperManually)
+app.post('/scrape', scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
