@@ -3,7 +3,8 @@ const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
-
+const cookieParser = require('cookie-parser')   
+const csrf = require('csurf')
 const cron = require('../Scraping/cron')
 
 // Routes dependecies
@@ -24,15 +25,19 @@ app.use(morgan('combined'));
 app.use(
     express.json(),
     express.urlencoded({
-        extended: true,
-    })
+        extended: false,
+    }),
+    cookieParser(),
+    csrf({cookie: true})
+    
 )
 
 app.get('/', (request, response) => {
+    response.cookie('XSRF-TOKEN', request.csrfToken())
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
-app.use('/games',cors(), gamesRoutes)
+app.use('/games', gamesRoutes)
 
 app.post('/games/scrape', scraperController.startScraperManually)
 
