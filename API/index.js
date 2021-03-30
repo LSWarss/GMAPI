@@ -20,25 +20,23 @@ app.use(helmet());
 
 // Logging http requests 
 app.use(morgan('combined'));
+const csrfProtection = csrf({ cookie: true })
 
 app.use(
     express.json(),
     express.urlencoded({
         extended: false,
     }),
-    cookieParser(),
-    csrf({cookie: true})
-    
+    cookieParser()
 )
 
 app.get('/', (request, response) => {
-    response.cookie('XSRF-TOKEN', request.csrfToken())
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
 app.use('/games', gamesRoutes)
 
-app.post('/games/scrape', scraperController.startScraperManually)
+app.post('/games/scrape', csrf({ cookie: true, ignoreMethods: ['POST'] }), scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)

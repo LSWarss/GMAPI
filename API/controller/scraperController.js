@@ -11,8 +11,8 @@ const startScraperManually = (request, response) => {
             if (error) {
                 throw error
             }
-            response.status(202).json({ message: 'Started manual scraping', results})
         })
+        response.status(202).json({ message: 'Started manual scraping'})
     } else {
         response.status(400).json({ message: 'Wrong scrap token'})
     }
