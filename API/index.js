@@ -20,7 +20,6 @@ app.use(helmet());
 
 // Logging http requests 
 app.use(morgan('combined'));
-const csrfProtection = csrf({ cookie: true })
 
 app.use(
     express.json(),
@@ -36,7 +35,7 @@ app.get('/', (request, response) => {
 
 app.use('/games', gamesRoutes)
 
-app.post('/games/scrape', csrf({ cookie: true, ignoreMethods: ['POST'] }), scraperController.startScraperManually)
+app.get('/games/scrape', scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
