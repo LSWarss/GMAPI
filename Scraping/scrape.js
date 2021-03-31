@@ -37,7 +37,10 @@ async function getPagedUrls(urls) {
  
 async function getPages(url) {
     const response = await fetch(url)
-    
+    if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+    }
     const text = await response.text()
     const $ = cheerio.load(text)
     let urls = new Array()
@@ -113,7 +116,7 @@ async function getGameDetails(url) {
         const message = `An error has occured: ${response.status}`;
         throw new Error(message);
     }
-    
+
     const text = await response.text()
     const $ = cheerio.load(text)
     let details = new Array()
@@ -126,8 +129,6 @@ async function getGameDetails(url) {
     })
     return details
 }
-
-scraper()
 
 module.exports = {
     scraper

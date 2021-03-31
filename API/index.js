@@ -2,8 +2,22 @@
 const express = require('express')
 const helmet = require('helmet')
 const morgan = require('morgan')
-const cookieParser = require('cookie-parser') 
+const cookieParser = require('cookie-parser')
+const rateLimit = require('express-rate-limit') 
 const cron = require('../Scraping/cron')
+
+// Enpoint limits 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, //15 minutes
+    max: 100, // limit
+    message: "Too many requests from this IP, try again in 15 minutes" 
+});
+
+const scrapeLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3,
+    message: "Too many requests for scraping"
+})
 
 // Cors
 var allowCrossDomain = function(req, res, next) {
@@ -45,13 +59,13 @@ app.use(
     cookieParser()
 )
 
-app.get('/', (request, response) => {
+app.get('/', limiter, (request, response) => {
     response.json({ message: 'GMAPI - Gaming Premiers API'})
 })
 
-app.use('/games', gamesRoutes)
+app.use('/games', limiter, gamesRoutes)
 
-app.get('/scrape', scraperController.startScraperManually)
+app.get('/scrape', scrapeLimiter, scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
