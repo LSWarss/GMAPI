@@ -48,7 +48,35 @@ const getGame = (request, response) => {
     })
 }
 
+const getGenres = (request, response) => {
 
+    pool.query('SELECT DISTINCT genre FROM games', (error, results) => {
+        if (error) { 
+            throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
+
+const getDevelopers = (request, response) => { 
+
+    pool.query('SELECT DISTINCT developer FROM games', (error, results) => {
+        if (error) { 
+            throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
+
+const getPlatforms = (request, response) => { 
+
+    pool.query('SELECT DISTINCT platform FROM games', (error, results) => {
+        if (error) { 
+            throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
 
 const createGame = (request, response) => {
     const { title, platform, release_date } = request.body
@@ -89,6 +117,9 @@ module.exports = {
     getGames,
     getGamesByPlatform,
     getGameByTitle,
+    getDevelopers,
+    getPlatforms,
+    getGenres,
     createGame,
     updateGame,
     deleteGame

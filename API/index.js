@@ -2,7 +2,7 @@
 const express = require('express')
 const helmet = require('helmet')
 const morgan = require('morgan')
-const cookieParser = require('cookie-parser')   
+const cookieParser = require('cookie-parser') 
 const cron = require('../Scraping/cron')
 
 // Cors

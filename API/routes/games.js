@@ -5,6 +5,8 @@ const gamesController = require('../controller/gamesController')
 gamesRoutes.get('/', gamesController.getGames)
 gamesRoutes.get('/title', gamesController.getGameByTitle)
 gamesRoutes.get('/platform/:name', gamesController.getGamesByPlatform)
-gamesRoutes.get('/:id', gamesController.getGame)
+gamesRoutes.get('/platforms', gamesController.getPlatforms)
+gamesRoutes.get('/developers', gamesController.getDevelopers)
+gamesRoutes.get('/genres', gamesController.getGenres)
 
 module.exports = gamesRoutes

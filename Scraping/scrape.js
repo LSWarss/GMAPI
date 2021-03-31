@@ -9,6 +9,7 @@ const {
 const {
     convertToPgDate
 } = require('./utilities')
+
 const metaUrls2 = [
     'https://www.metacritic.com/browse/games/release-date/coming-soon/pc/date',
     'https://www.metacritic.com/browse/games/release-date/coming-soon/ps5/date',
@@ -36,6 +37,7 @@ async function getPagedUrls(urls) {
  
 async function getPages(url) {
     const response = await fetch(url)
+    
     const text = await response.text()
     const $ = cheerio.load(text)
     let urls = new Array()
@@ -49,6 +51,12 @@ async function getPages(url) {
 
 async function getGames(url) {
     const response = await fetch(url);
+
+    if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+    }
+
     const text = await response.text()
     const $ = cheerio.load(text)
     let games = new Array()
@@ -69,16 +77,15 @@ async function getGames(url) {
 
     for await(game of games) {
        
-        const gameDetails = await getGameDetails("https://metacritic.com" + game.gameLink)
-        .catch(error => alert(error.message))
+        const gameDetails = await getGameDetails("https://metacritic.com" + game.gameLink).catch(error => alert(error.message))
         
-        if (gameDetails[1].gameDeveloper != undefined) {
+        if (gameDetails[1].gameDeveloper != undefined || gameDetails[1].gameDeveloper != "") {
             game["gameDeveloper"] = gameDetails[1].gameDeveloper
         } else { 
             game["gameDeveloper"] = "Unknown"
         }
 
-        if (gameDetails[1].gameGenre != undefined) { 
+        if (gameDetails[1].gameGenre != undefined || gameDetails[1].gameGenre != "") { 
             game["gameGenre"] = gameDetails[1].gameGenre 
         } else {
             game["gameGenre"] = "Unknown"
@@ -101,6 +108,12 @@ async function getGames(url) {
 async function getGameDetails(url) { 
     await setTimeout[Object.getOwnPropertySymbols(setTimeout)[0]](3000) 
     const response = await fetch(url);
+
+    if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+    }
+    
     const text = await response.text()
     const $ = cheerio.load(text)
     let details = new Array()
@@ -114,7 +127,7 @@ async function getGameDetails(url) {
     return details
 }
 
-getPagedUrls(metaUrls2)
+scraper()
 
 module.exports = {
     scraper
