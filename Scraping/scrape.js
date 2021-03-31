@@ -21,14 +21,45 @@ const metaUrls2 = [
     'https://www.metacritic.com/browse/games/release-date/coming-soon/stadia/date'
 ]
 
-async function scraper() { 
-    for await (url of metaUrls2) { 
+async function scraper() {
+    for await (url of metaUrls2) {
         const games = await getGames(url);
     }
 }
 
+async function getPagedUrls(urls) { 
+    let pagedUrls = new Array()
+    for await( url of urls){
+        let pages = await getPages(url)
+        console.log(pages)
+    }
+}
+ 
+async function getPages(url) {
+    const response = await fetch(url)
+    if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+    }
+    const text = await response.text()
+    const $ = cheerio.load(text)
+    let urls = new Array()
+
+    let pagesCount = $('.last_page').find('.page_num').text()
+    for( let page = 1; page <= pagesCount; page++){
+        urls.push(`${url}/${page}`)
+    }
+    return urls
+}
+
 async function getGames(url) {
     const response = await fetch(url);
+
+    if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+    }
+
     const text = await response.text()
     const $ = cheerio.load(text)
     let games = new Array()
@@ -49,15 +80,15 @@ async function getGames(url) {
 
     for await(game of games) {
        
-        const gameDetails = await getGameDetails("https://metacritic.com" + game.gameLink)
+        const gameDetails = await getGameDetails("https://metacritic.com" + game.gameLink).catch(error => alert(error.message))
         
-        if (gameDetails[1].gameDeveloper != undefined) {
+        if (gameDetails[1].gameDeveloper != undefined || gameDetails[1].gameDeveloper != "") {
             game["gameDeveloper"] = gameDetails[1].gameDeveloper
         } else { 
             game["gameDeveloper"] = "Unknown"
         }
 
-        if (gameDetails[1].gameGenre != undefined) { 
+        if (gameDetails[1].gameGenre != undefined || gameDetails[1].gameGenre != "") { 
             game["gameGenre"] = gameDetails[1].gameGenre 
         } else {
             game["gameGenre"] = "Unknown"
@@ -80,6 +111,12 @@ async function getGames(url) {
 async function getGameDetails(url) { 
     await setTimeout[Object.getOwnPropertySymbols(setTimeout)[0]](3000) 
     const response = await fetch(url);
+
+    if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+    }
+
     const text = await response.text()
     const $ = cheerio.load(text)
     let details = new Array()
@@ -92,7 +129,6 @@ async function getGameDetails(url) {
     })
     return details
 }
-
 
 module.exports = {
     scraper
