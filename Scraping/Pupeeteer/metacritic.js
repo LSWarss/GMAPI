@@ -1,13 +1,14 @@
 const puppeteer = require("puppeteer")
-const chalk = require("chalk")
+
 const fs = require('fs');
 const { performance } = require('perf_hooks');
+const { colorLogs, getUpcomingGamesUrlForPlatform } = require('../utilities')
 
-const error = chalk.bold.red
-const success = chalk.keyword("green")
-const successInside = chalk.keyword("blue")
-const functionCall = chalk.bold.cyan
 
+/**
+ * Async function that scrapes games for a given URL
+ * @param {String} url 
+ */
 async function scrapePage(url) { 
     try { 
         var t0 = performance.now()
@@ -19,8 +20,6 @@ async function scrapePage(url) {
 
         await page.waitForSelector('table.clamp-list')
         await page.waitForSelector('ul.pages')
-        var lastPageNumber = await page.evaluate(() => document.querySelector('li.last_page').textContent.slice(1))
-        console.log(lastPageNumber)
 
         var games = await page.evaluate(() => { 
             
@@ -47,9 +46,14 @@ async function scrapePage(url) {
         })
 
         for (var game of games.entries()) {
-            var gameUrl = "https://www.metacritic.com/" + game[1]["link"]
-            await page.goto(gameUrl)
-            console.log(successInside(`Successfully opened ${gameUrl}`))
+            var gameUrl = "https://www.metacritic.com" + game[1]["link"]
+            await page.goto(gameUrl, {
+                waitUntil: 'domcontentloaded',
+                timeout: 0
+            }).catch((error) => { 
+                console.log(colorLogs.error(error))
+             })
+            console.log(colorLogs.successInside(`Successfully opened ${gameUrl}`))
             await page.waitForSelector('li.developer')
 
             game[1]["developer"] = (await page.evaluate(() => {
@@ -72,18 +76,57 @@ async function scrapePage(url) {
 
         await browser.close()
 
-        fs.writeFile("games.json", JSON.stringify(games), (err) => {
+        fs.appendFile("games.json",JSON.stringify(games), (err) => {
             if(err) throw err;
-            console.log(successInside("Saved games!"))
+            console.log(colorLogs.successInside("Saved games!"))
         })
         var t1 = performance.now()
-        console.log('Function: ' + functionCall("scrapePage()") + " took approximately " + Math.round((t1 - t0)/1000) + " seconds.")
-        console.log(success("Browser Closed"))
+        console.log('Function: ' + colorLogs.functionCall("scrapePage()") + " took approximately " + Math.round((t1 - t0)/1000) + " seconds.")
+        console.log(colorLogs.success("Browser Closed"))
     } catch(err) { 
-        console.log(error(err));
+        console.log(colorLogs.error(err));
         await browser.close();
-        console.log(error("Browser Closed"));
+        console.log(colorLogs.error("Browser Closed"));
     }
 }
 
-scrapePage('https://www.metacritic.com/browse/games/score/metascore/year/all/filtered')
+/**
+ * Async function returning array of URL with paging for future scraping on resolve
+ * @param {String} baseUrl 
+ * @returns [String]
+ */
+async function getAllPagesForScraping(baseUrl) {
+    try { 
+        var t0 = performance.now()
+        var linksArray = []
+        var browser = await puppeteer.launch({ headless: true})
+
+        var page = await browser.newPage()
+
+        await page.goto(baseUrl)
+        await page.waitForSelector('ul.pages')
+        var lastPageNumber = await page.evaluate(() => document.querySelector('li.last_page').textContent.slice(1))
+        browser.close();
+        
+        console.log(colorLogs.success("Page number gathering successfull"))
+        var t1 = performance.now()
+        console.log('Function: ' + colorLogs.functionCall("scrapePage()") + " took approximately " + Math.round((t1 - t0)/1000) + " seconds.")
+
+        for(var i = 1; i < parseInt(lastPageNumber); i++) { 
+            linksArray.push(baseUrl + "?page=" + i)
+        }
+        return linksArray
+    } catch (err) { 
+        console.log(colorLogs.error(err));
+        await browser.close();
+        console.log(colorLogs.error("Browser Closed"))
+    }
+
+}
+
+getAllPagesForScraping(getUpcomingGamesUrlForPlatform("pc")).then((links) => {
+    for (var link of links) {
+        console.log("⛏ from " + colorLogs.functionCall(link))
+        scrapePage(link)
+    }
+} )

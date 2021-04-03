@@ -1,3 +1,4 @@
+const chalk = require("chalk")
 
 const MonthsEnum = Object.freeze({
     "January": "01",
@@ -15,9 +16,19 @@ const MonthsEnum = Object.freeze({
 })
 
 /**
+ * Simple enum for coloring logs inside programs to not repeat it in every file, uses chalk for it
+ */
+const colorLogs = Object.freeze({     
+    error : chalk.bold.red,
+    success : chalk.keyword("green"),
+    successInside : chalk.keyword("blue"),
+    functionCall : chalk.bold.cyan
+})
+
+/**
  * Converts to date processable by postrgres query from scraped format
  * @param {String} date Input date in format: Month Day, Numeric Year
- * @returns {String} 
+ * @returns String 
  */
 function convertToPgDate(date){
 
@@ -43,7 +54,7 @@ const MetaUrlComponents = Object.freeze({
 /**
  * Function returning URL for upcoming games for given platform
  * @param {String} platform 
- * @returns {String} url
+ * @returns String
  */
 function getUpcomingGamesUrlForPlatform(platform){ 
     return MetaUrlComponents["baseUrl"] + MetaUrlComponents["comming_soon"] + platform.toLowerCase() + "/date"
@@ -53,7 +64,7 @@ function getUpcomingGamesUrlForPlatform(platform){
  * Function returning URl for best games from given year and platform, check if the year is in the range of valid ones, if else throws an error. 
  * @param {String} platform 
  * @param {String} year 
- * @returns {String} url
+ * @returns String 
  */
 function getYearGameReleasesUrl(platform, year){
     let currentYear = new Date();
@@ -68,5 +79,6 @@ function getYearGameReleasesUrl(platform, year){
 module.exports = {
     convertToPgDate,
     getUpcomingGamesUrlForPlatform,
-    getYearGameReleasesUrl
+    getYearGameReleasesUrl,
+    colorLogs
 }
