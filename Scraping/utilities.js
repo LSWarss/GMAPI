@@ -1,3 +1,4 @@
+const chalk = require("chalk")
 
 const MonthsEnum = Object.freeze({
     "January": "01",
@@ -15,9 +16,19 @@ const MonthsEnum = Object.freeze({
 })
 
 /**
+ * Simple enum for coloring logs inside programs to not repeat it in every file, uses chalk for it
+ */
+const colorLogs = Object.freeze({     
+    error : chalk.bold.red,
+    success : chalk.keyword("green"),
+    successInside : chalk.keyword("blue"),
+    functionCall : chalk.bold.cyan
+})
+
+/**
  * Converts to date processable by postrgres query from scraped format
  * @param {String} date Input date in format: Month Day, Numeric Year
- * @returns {String} 
+ * @returns String 
  */
 function convertToPgDate(date){
 
@@ -30,6 +41,44 @@ function convertToPgDate(date){
     return `${convertedDate[2]}-${convertedDate[0]}-${convertedDate[1]}`
 }
 
+/**
+ * Basic enum with utility componenets to parse urls from
+ */
+const MetaUrlComponents = Object.freeze({
+    baseUrl: "https://www.metacritic.com/",
+    comming_soon : "browse/games/release-date/coming-soon/",
+    releases_score : "browse/games/score/metascore/year/"
+    
+})
+
+/**
+ * Function returning URL for upcoming games for given platform
+ * @param {String} platform 
+ * @returns String
+ */
+function getUpcomingGamesUrlForPlatform(platform){ 
+    return MetaUrlComponents["baseUrl"] + MetaUrlComponents["comming_soon"] + platform.toLowerCase() + "/date"
+}
+
+/**
+ * Function returning URl for best games from given year and platform, check if the year is in the range of valid ones, if else throws an error. 
+ * @param {String} platform 
+ * @param {String} year 
+ * @returns String 
+ */
+function getYearGameReleasesUrl(platform, year){
+    let currentYear = new Date();
+    let yearParsed = Date.parse(`${year}-01-01`).toFixed()
+    if (Date.parse(currentYear) < yearParsed || yearParsed < Date.parse("1916")) { 
+        throw new Error("Wrong date passed")
+    } else { 
+    return MetaUrlComponents['baseUrl'] + MetaUrlComponents['releases_score'] + platform.toLowerCase() + `/filtered?year_selected=${year}` + "&distribution=&sort=desc&view=detailed"
+    }
+}
+
 module.exports = {
-    convertToPgDate
+    convertToPgDate,
+    getUpcomingGamesUrlForPlatform,
+    getYearGameReleasesUrl,
+    colorLogs
 }

@@ -1,16 +1,8 @@
-const { scraper } = require('../../Scraping/scrape')
+const { scrapeComingSoonForAllSupportedPlatforms } = require("../../Scraping/Pupeeteer/metacritic")
 
 const startScraperManually = (request, response) => {
-
-    // const { scrapToken } = request.body
-
-    // if(scrapToken === process.env.SCRAP_TOKEN) {
-        scraper()
+        scrapeComingSoonForAllSupportedPlatforms()
         response.status(202).json({ message: 'Started manual scraping'})
-    // } else {
-    //     response.status(400).json({ message: 'Wrong scrap token'})
-    // }
-    
 }
 
 

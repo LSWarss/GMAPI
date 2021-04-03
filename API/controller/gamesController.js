@@ -50,7 +50,7 @@ const getGame = (request, response) => {
 
 const getGenres = (request, response) => {
 
-    pool.query('SELECT DISTINCT genre FROM games', (error, results) => {
+    pool.query('SELECT DISTINCT unnest(genres) as genre from games', (error, results) => {
         if (error) { 
             throw error
         }

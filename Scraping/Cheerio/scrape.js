@@ -3,12 +3,12 @@ const fetch = require("isomorphic-fetch")
 
 const {
     pool
-} = require('../API/model/db')
+} = require('../../API/model/db')
 
 
 const {
     convertToPgDate
-} = require('./utilities')
+} = require('../utilities')
 
 const metaUrls2 = [
     'https://www.metacritic.com/browse/games/release-date/coming-soon/pc/date',
@@ -94,7 +94,7 @@ async function getGames(url) {
             game["gameGenre"] = "Unknown"
         }   
 
-        pool.query('INSERT INTO games (title, description, developer, genre, release_date, platform, score) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT ON CONSTRAINT games_title_key DO NOTHING;', [game.gameTitle,game.gameSummary, game.gameDeveloper, game.gameGenre, convertToPgDate(game.gameRelease), game.gamePlatform, game.gameScore], (error, results) => {
+        pool.query('INSERT INTO games (title, description, developer, release_date, platform, score, genres) VALUES ($1,$2,$3,$4,$5,$6,[$7]) ON CONFLICT ON CONSTRAINT games_title_key DO NOTHING;', [game.gameTitle,game.gameSummary, game.gameDeveloper, game.gameGenre, convertToPgDate(game.gameRelease), game.gamePlatform, game.gameScore], (error, results) => {
             if (error) {
                 throw new Error(`Error on inserting to database occured ❌: ${error}`);
             }
