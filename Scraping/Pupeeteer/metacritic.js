@@ -1,9 +1,11 @@
 const puppeteer = require("puppeteer")
 
-const fs = require('fs');
 const { performance } = require('perf_hooks');
-const { colorLogs, getUpcomingGamesUrlForPlatform } = require('../utilities')
+const { colorLogs, getUpcomingGamesUrlForPlatform, convertToPgDate} = require('../utilities')
 
+const {
+    pool
+} = require('../../API/model/db')
 
 /**
  * Async function that scrapes games for a given URL
@@ -19,7 +21,6 @@ async function scrapePage(url) {
         await page.goto(url)
 
         await page.waitForSelector('table.clamp-list')
-        await page.waitForSelector('ul.pages')
 
         var games = await page.evaluate(() => { 
             
@@ -65,7 +66,7 @@ async function scrapePage(url) {
             game[1]["genres"] = (await page.evaluate(() => {
                 var gameGenres = new Array()
                 document.querySelectorAll('li.product_genre > span.data').forEach( element => { 
-                    gameGenres.push(element.textContent)
+                    gameGenres.push(element.textContent.trim())
                 })
                 return gameGenres
             }))
@@ -76,10 +77,16 @@ async function scrapePage(url) {
 
         await browser.close()
 
-        fs.appendFile("games.json",JSON.stringify(games), (err) => {
-            if(err) throw err;
-            console.log(colorLogs.successInside("Saved games!"))
+        games.forEach((game) => { 
+            let queryText = `INSERT INTO games (title, description, developer, release_date, platform, score, genres) VALUES ($1,$2,$3,$4,$5,$6,ARRAY[${"'" + game.genres.join("','") + "'"}]) ON CONFLICT ON CONSTRAINT games_title_key DO NOTHING;`
+            pool.query(queryText, [game.title,game.description, game.developer, convertToPgDate(game.releaseDate), game.platform, game.userScore], (error, results) => {
+                if (error) {
+                    throw new Error(`Error on inserting to database occured ❌: ${error}`);
+                }
+            });
         })
+
+
         var t1 = performance.now()
         console.log('Function: ' + colorLogs.functionCall("scrapePage()") + " took approximately " + Math.round((t1 - t0)/1000) + " seconds.")
         console.log(colorLogs.success("Browser Closed"))
@@ -104,8 +111,18 @@ async function getAllPagesForScraping(baseUrl) {
         var page = await browser.newPage()
 
         await page.goto(baseUrl)
-        await page.waitForSelector('ul.pages')
-        var lastPageNumber = await page.evaluate(() => document.querySelector('li.last_page').textContent.slice(1))
+        
+        var lastPageNumber = await page.evaluate(() =>  {
+            if(document.querySelector('li.last_page') != null) {
+                return document.querySelector('li.last_page').textContent.slice(1)
+            } else {
+                return 0
+            }
+        })
+
+        if(lastPageNumber === 0) { 
+            return [baseUrl]
+        }
         browser.close();
         
         console.log(colorLogs.success("Page number gathering successfull"))
@@ -115,7 +132,9 @@ async function getAllPagesForScraping(baseUrl) {
         for(var i = 1; i < parseInt(lastPageNumber); i++) { 
             linksArray.push(baseUrl + "?page=" + i)
         }
+
         return linksArray
+        
     } catch (err) { 
         console.log(colorLogs.error(err));
         await browser.close();
@@ -124,7 +143,7 @@ async function getAllPagesForScraping(baseUrl) {
 
 }
 
-getAllPagesForScraping(getUpcomingGamesUrlForPlatform("pc")).then((links) => {
+getAllPagesForScraping(getUpcomingGamesUrlForPlatform("stadia")).then((links) => {
     for (var link of links) {
         console.log("⛏ from " + colorLogs.functionCall(link))
         scrapePage(link)
