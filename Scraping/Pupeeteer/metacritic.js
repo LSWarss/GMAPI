@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer")
 
 const { performance } = require('perf_hooks');
 const { colorLogs, getUpcomingGamesUrlForPlatform, convertToPgDate} = require('../utilities')
-
+const { SupportedPlatforms } = require('../../API/model/constants/const') 
 const {
     pool
 } = require('../../API/model/db')
@@ -88,7 +88,7 @@ async function scrapePage(url) {
 
 
         var t1 = performance.now()
-        console.log('Function: ' + colorLogs.functionCall("scrapePage()") + " took approximately " + Math.round((t1 - t0)/1000) + " seconds.")
+        console.log('Function: ' + colorLogs.functionCall(`scrapePage(${url})`) + " took approximately " + Math.round((t1 - t0)/1000) + " seconds.")
         console.log(colorLogs.success("Browser Closed"))
     } catch(err) { 
         console.log(colorLogs.error(err));
@@ -143,9 +143,23 @@ async function getAllPagesForScraping(baseUrl) {
 
 }
 
-getAllPagesForScraping(getUpcomingGamesUrlForPlatform("stadia")).then((links) => {
-    for (var link of links) {
-        console.log("⛏ from " + colorLogs.functionCall(link))
-        scrapePage(link)
+function scrapeComingSoonForAllSupportedPlatforms() {
+    for(let i=0; i <= SupportedPlatforms.length; i++){
+        let timeoutLenght = i * 5 * 60 * 1000
+        setTimeout( () =>   
+        getAllPagesForScraping(getUpcomingGamesUrlForPlatform(SupportedPlatforms[i])).then((links) => {
+            for (var link of links) {
+                console.log("⛏ from " + colorLogs.functionCall(link))
+                scrapePage(link)
+            }
+        } ), timeoutLenght)
     }
-} )
+}
+
+scrapeComingSoonForAllSupportedPlatforms()
+
+module.exports = {
+    scrapeComingSoonForAllSupportedPlatforms
+}
+
+
