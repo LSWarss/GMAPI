@@ -36,7 +36,7 @@ var allowCrossDomain = function(req, res, next) {
 
 
 // Routes dependecies
-// const scraperController = require('./controller/scraperController')
+const scraperController = require('./controller/scraperController')
 const gamesRoutes = require('./routes/games')
 
 const PORT = process.env.PORT || 3000
@@ -65,7 +65,7 @@ app.get('/', limiter, (request, response) => {
 
 app.use('/games', limiter, gamesRoutes)
 
-// app.get('/scrape', scrapeLimiter, scraperController.startScraperManually)
+app.get('/scrape', scrapeLimiter, scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)

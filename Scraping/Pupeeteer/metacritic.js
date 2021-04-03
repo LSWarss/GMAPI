@@ -55,7 +55,9 @@ async function scrapePage(url) {
                 console.log(colorLogs.error(error))
              })
             console.log(colorLogs.successInside(`Successfully opened ${gameUrl}`))
-            await page.waitForSelector('li.developer')
+            await page.waitForSelector('li.developer').catch((error) => {
+                console.log(colorLogs.error(error))
+            })
 
             game[1]["developer"] = (await page.evaluate(() => {
                 
@@ -65,8 +67,8 @@ async function scrapePage(url) {
 
             game[1]["genres"] = (await page.evaluate(() => {
                 var gameGenres = new Array()
-                document.querySelectorAll('li.product_genre > span.data').forEach( element => { 
-                    gameGenres.push(element.textContent.trim())
+                document.querySelectorAll('li.product_genre > span.data').forEach( element => {
+                    gameGenres.push(element.textContent.trim().replace("'", ""))
                 })
                 return gameGenres
             }))
@@ -155,8 +157,6 @@ function scrapeComingSoonForAllSupportedPlatforms() {
         } ), timeoutLenght)
     }
 }
-
-scrapeComingSoonForAllSupportedPlatforms()
 
 module.exports = {
     scrapeComingSoonForAllSupportedPlatforms
