@@ -1,5 +1,5 @@
 const cron = require('node-cron')
-const { scraper } = require('./scrape')
+const { scraper } = require('./Cheerio/scrape')
 
 console.log("Started cron")
 

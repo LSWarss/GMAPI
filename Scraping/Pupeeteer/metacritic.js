@@ -28,6 +28,7 @@ async function scrapePage(url) {
             var gamesSummarys = document.querySelectorAll('div.summary')
             var gamesPlatforms = document.querySelectorAll('div.platform > span.data')
             var gamesReleaseDates = document.querySelectorAll('div.clamp-details > span')
+            var gamesUserScore = document.querySelectorAll('div.clamp-userscore > a')
             var gamesArray = []
 
             for(var i = 0; i < gamesTitles.length; i++) {
@@ -37,17 +38,35 @@ async function scrapePage(url) {
                     link: gamesTitles[i].getAttribute("href"),
                     description: gamesSummarys[i].innerText.trim(),
                     platform: gamesPlatforms[i].innerText.trim(),
-                    releaseDate: gamesReleaseDates[i].innerText.trim()
+                    releaseDate: gamesReleaseDates[i].innerText.trim(),
+                    userScore: gamesUserScore[i].textContent.trim()
                 }
             }
 
             return gamesArray
         })
 
-        for (const game of games.entries()) {
+        for (var game of games.entries()) {
             var gameUrl = "https://www.metacritic.com/" + game[1]["link"]
             await page.goto(gameUrl)
             console.log(successInside(`Successfully opened ${gameUrl}`))
+            await page.waitForSelector('li.developer')
+
+            game[1]["developer"] = (await page.evaluate(() => {
+                
+                var gameDeveloper = document.querySelector('li.developer > span.data').textContent.trim()
+                return gameDeveloper
+            }))
+
+            game[1]["genres"] = (await page.evaluate(() => {
+                var gameGenres = new Array()
+                document.querySelectorAll('li.product_genre > span.data').forEach( element => { 
+                    gameGenres.push(element.textContent)
+                })
+                return gameGenres
+            }))
+            
+            console.log(game)
             await page.goBack();
         }
 
@@ -67,4 +86,4 @@ async function scrapePage(url) {
     }
 }
 
-scrapePage('https://www.metacritic.com/browse/games/release-date/coming-soon/pc/date')
+scrapePage('https://www.metacritic.com/browse/games/score/metascore/year/all/filtered')

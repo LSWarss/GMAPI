@@ -3,12 +3,12 @@ const fetch = require("isomorphic-fetch")
 
 const {
     pool
-} = require('../API/model/db')
+} = require('../../API/model/db')
 
 
 const {
     convertToPgDate
-} = require('./utilities')
+} = require('../utilities')
 
 const metaUrls2 = [
     'https://www.metacritic.com/browse/games/release-date/coming-soon/pc/date',
