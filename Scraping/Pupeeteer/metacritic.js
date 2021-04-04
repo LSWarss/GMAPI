@@ -15,7 +15,7 @@ const {
 async function scrapePage(url) { 
     try { 
         var t0 = performance.now()
-        var browser = await puppeteer.launch({ headless: true })
+        var browser = await puppeteer.launch({ headless: true ,args: ['--no-sandbox', '--disable-setuid-sandbox'] })
 
         var page = await browser.newPage()
 
@@ -109,7 +109,7 @@ async function getAllPagesForScraping(baseUrl) {
     try { 
         var t0 = performance.now()
         var linksArray = []
-        var browser = await puppeteer.launch({ headless: true})
+        var browser = await puppeteer.launch({ headless: true ,  args: ['--no-sandbox', '--disable-setuid-sandbox']})
 
         var page = await browser.newPage()
 
