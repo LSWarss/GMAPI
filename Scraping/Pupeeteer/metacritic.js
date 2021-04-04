@@ -6,7 +6,6 @@ const { SupportedPlatforms } = require('../../API/model/constants/const')
 const {
     pool
 } = require('../../API/model/db')
-const cron = require("../cron")
 
 
 /**

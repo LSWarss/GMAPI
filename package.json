@@ -7,7 +7,8 @@
     "test": "mocha",
     "start_scraper": "node ./Scraping/Pupeeteer/metacritic.js",
     "start_server": "node ./API/index.js",
-    "dev_server": "nodemon ./API/index.js"
+    "dev_server": "nodemon ./API/index.js",
+    "start_cron": "node ./Scraping/cron.js"
   },
   "repository": {
     "type": "git",
