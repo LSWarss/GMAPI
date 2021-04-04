@@ -6,6 +6,8 @@ const { SupportedPlatforms } = require('../../API/model/constants/const')
 const {
     pool
 } = require('../../API/model/db')
+const cron = require("../cron")
+
 
 /**
  * Async function that scrapes games for a given URL
@@ -14,7 +16,7 @@ const {
 async function scrapePage(url) { 
     try { 
         var t0 = performance.now()
-        var browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] })
+        var browser = await puppeteer.launch({ headless: true })
 
         var page = await browser.newPage()
 
@@ -108,7 +110,7 @@ async function getAllPagesForScraping(baseUrl) {
     try { 
         var t0 = performance.now()
         var linksArray = []
-        var browser = await puppeteer.launch({ headless: true,args: ['--no-sandbox'] })
+        var browser = await puppeteer.launch({ headless: true})
 
         var page = await browser.newPage()
 
@@ -157,6 +159,8 @@ function scrapeComingSoonForAllSupportedPlatforms() {
         } ), timeoutLenght)
     }
 }
+
+scrapeComingSoonForAllSupportedPlatforms()
 
 module.exports = {
     scrapeComingSoonForAllSupportedPlatforms

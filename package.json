@@ -5,7 +5,7 @@
   "main": "./Api/index.js",
   "scripts": {
     "test": "mocha",
-    "start_scraper": "node ./Scraping/scrape.js",
+    "start_scraper": "node ./Scraping/Pupeeteer/metacritic.js",
     "start_server": "node ./API/index.js",
     "dev_server": "nodemon ./API/index.js"
   },
