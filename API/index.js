@@ -65,7 +65,7 @@ app.get('/', limiter, (request, response) => {
 
 app.use('/games', limiter, gamesRoutes)
 
-// app.get('/scrape', scrapeLimiter, scraperController.startScraperManually)
+app.get('/scrape', scrapeLimiter, scraperController.startScraperManually)
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT} ⛴`)
