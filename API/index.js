@@ -36,7 +36,7 @@ var allowCrossDomain = function(req, res, next) {
 
 
 // Routes dependecies
-// const scraperController = require('./controller/scraperController')
+const scraperController = require('./controller/scraperController')
 const gamesRoutes = require('./routes/games')
 
 const PORT = process.env.PORT || 3000
