@@ -56,12 +56,12 @@ app.use(
     express.json(),
     express.urlencoded({
         extended: false,
-    }),
+    }), 
     cookieParser()
 )
 
 app.get('/', (request, response) => {
-    res.sendFile('./API/static/index.html', { root: __dirname });
+    response.sendFile('./API/static/index.html', { root: __dirname });
 })
 
 app.use('/games', limiter, gamesRoutes)
