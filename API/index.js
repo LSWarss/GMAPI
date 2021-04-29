@@ -4,6 +4,7 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const rateLimit = require('express-rate-limit') 
+const path = require('path')
 // const cron = require('../Scraping/cron')
 
 // Enpoint limits 
@@ -59,8 +60,8 @@ app.use(
     cookieParser()
 )
 
-app.get('/', limiter, (request, response) => {
-    response.json({ message: 'GMAPI - Gaming Premiers API'})
+app.get('/', (request, response) => {
+    res.sendFile('./API/static/index.html', { root: __dirname });
 })
 
 app.use('/games', limiter, gamesRoutes)

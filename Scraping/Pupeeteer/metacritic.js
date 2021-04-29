@@ -148,7 +148,7 @@ async function getAllPagesForScraping(baseUrl) {
 
 function scrapeComingSoonForAllSupportedPlatforms() {
     for(let i=0; i <= SupportedPlatforms.length; i++){
-        let timeoutLenght = i * 5 * 60 * 1000
+        let timeoutLenght = i * 10 * 60 * 1000
         setTimeout( () =>   
         getAllPagesForScraping(getUpcomingGamesUrlForPlatform(SupportedPlatforms[i])).then((links) => {
             for (var link of links) {
