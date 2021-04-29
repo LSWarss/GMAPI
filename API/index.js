@@ -61,7 +61,7 @@ app.use(
 )
 
 app.get('/', (request, response) => {
-    response.sendFile('./API/static/index.html', { root: __dirname });
+    response.sendFile('./static/index.html', { root: __dirname });
 })
 
 app.use('/games', limiter, gamesRoutes)
