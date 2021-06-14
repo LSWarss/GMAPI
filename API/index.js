@@ -1,10 +1,9 @@
 // Dependencies
-const express = require('express')
-const helmet = require('helmet')
-const morgan = require('morgan')
-const cookieParser = require('cookie-parser')
-const rateLimit = require('express-rate-limit') 
-const path = require('path')
+const express = require('express'),
+helmet = require('helmet'),
+morgan = require('morgan'),
+cookieParser = require('cookie-parser'),
+rateLimit = require('express-rate-limit');
 // const cron = require('../Scraping/cron')
 
 // Enpoint limits 

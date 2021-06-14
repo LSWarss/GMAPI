@@ -7,13 +7,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
     <meta name="theme-color" content="#ffffff">
     <title>GMAPI - Gaming Premiers API</title>
 </head>
 
 <body>
-    <h1>GMAPI - Gaming Premiers API</h1>
-    <p>This API let's you get your favorite platforms games premiers and scoring.</p>
+    <div class="jumbotron vertical-center">
+        <div class="container">
+            <h1>GMAPI - Gaming Premiers API</h1>
+            <p>This API gives you release dates, developer data and much more of your favorite games.</p>
+            <div class="row">
+                <div class="col-1">
+                    <code>GET</code>
+                </div>
+                <div class="col-4">
+                    <a href="https://gmapi.org/games">https://gmapi.org/games</a>
+                </div>
+                <div class="col">
+                    <p>Returns list of all games.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    <code>GET</code>
+                </div>
+                <div class="col-4">
+                    <a href="https://gmapi.org/games/platform/PC">https://gmapi.org/games/platform/PC</a>
+                </div>
+                <div class="col">
+                    <p>Returns list of all games for given platform. For instance PC. </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    <code>GET</code>
+                </div>
+                <div class="col-4">
+                    <a href="https://gmapi.org/games/platforms">https://gmapi.org/games/platforms</a>
+                </div>
+                <div class="col">
+                    <p>Returns list of all platforms.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    <code>GET</code>
+                </div>
+                <div class="col-4">
+                    <a href="https://gmapi.org/games/genres">https://gmapi.org/games/genres</a>
+                </div>
+                <div class="col">
+                    <p>Returns list of all genres.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    <code>POST</code>
+                </div>
+                <div class="col-4">
+                    <a href="https://gmapi.org/games/scrape">https://gmapi.org/games/scrape</a>
+                </div>
+                <div class="col">
+                    <p>Starts out manual scraping of data. NEEDS TOKEN PROVIDED BY SERVICE <a
+                            href="https://www.linkedin.com/in/%C5%82ukasz-stachnik-495a46184/">OWNER</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
